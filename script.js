@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCatalogueForm();
   initDatasheetModal();
   initCallbackModal();
+  initMobileNav();
 });
 
 /* Sticky Header — uses IntersectionObserver on the hero section.
@@ -104,50 +105,121 @@ function initImageCarousel() {
 }
 
 /* Image Zoom — hover on main image shows a lens + a zoomed preview panel to the right */
+
 function initImageZoom() {
   const container = document.getElementById('mainImageContainer');
+  const mainImage = document.getElementById('mainImage');
   const zoomLens = document.getElementById('zoomLens');
   const zoomPreview = document.getElementById('zoomPreview');
   const zoomPreviewImg = document.getElementById('zoomPreviewImg');
 
-  if (!container || !zoomLens || !zoomPreview || !zoomPreviewImg) return;
+  if (
+    !container ||
+    !mainImage ||
+    !zoomLens ||
+    !zoomPreview ||
+    !zoomPreviewImg
+  ) {
+    return;
+  }
 
-  const ZOOM_RATIO = 2;
+  const zoomLevel = 1.0;
 
-  container.addEventListener('mouseenter', () => {
+  // Ensure image is fully loaded
+  if (!mainImage.complete) {
+    mainImage.onload = initImageZoom;
+    return;
+  }
+
+  function showZoom() {
+    zoomLens.style.display = 'block';
     zoomPreview.classList.add('active');
-  });
+  }
 
-  container.addEventListener('mouseleave', () => {
+  function hideZoom() {
+    zoomLens.style.display = 'none';
     zoomPreview.classList.remove('active');
-  });
+  }
 
-  container.addEventListener('mousemove', (e) => {
+  function moveLens(e) {
+    e.preventDefault();
+
     const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const lensW = zoomLens.offsetWidth;
-    const lensH = zoomLens.offsetHeight;
 
-    // Clamp lens within image bounds
-    let lensX = Math.max(0, Math.min(x - lensW / 2, rect.width - lensW));
-    let lensY = Math.max(0, Math.min(y - lensH / 2, rect.height - lensH));
+    // Mouse position inside container
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
 
-    zoomLens.style.left = lensX + 'px';
-    zoomLens.style.top = lensY + 'px';
+    // Clamp inside image
+    x = Math.max(0, Math.min(x, rect.width));
+    y = Math.max(0, Math.min(y, rect.height));
 
-    // Map lens position to preview image offset
-    const percX = lensX / (rect.width - lensW);
-    const percY = lensY / (rect.height - lensH);
+    const lensWidth = zoomLens.offsetWidth;
+    const lensHeight = zoomLens.offsetHeight;
 
-    const previewRect = zoomPreview.getBoundingClientRect();
-    zoomPreviewImg.style.width = previewRect.width * ZOOM_RATIO + 'px';
-    zoomPreviewImg.style.height = previewRect.height * ZOOM_RATIO + 'px';
+    // Lens position
+    let lensX = x - lensWidth / 2;
+    let lensY = y - lensHeight / 2;
 
-    const maxTX = previewRect.width * ZOOM_RATIO - previewRect.width;
-    const maxTY = previewRect.height * ZOOM_RATIO - previewRect.height;
-    zoomPreviewImg.style.transform = `translate(-${percX * maxTX}px, -${percY * maxTY}px)`;
-  });
+    // Prevent overflow
+    lensX = Math.max(
+      0,
+      Math.min(lensX, rect.width - lensWidth)
+    );
+
+    lensY = Math.max(
+      0,
+      Math.min(lensY, rect.height - lensHeight)
+    );
+
+    // Apply lens position
+    zoomLens.style.left = `${lensX}px`;
+    zoomLens.style.top = `${lensY}px`;
+
+    // Original image dimensions
+    const naturalWidth = mainImage.naturalWidth;
+    const naturalHeight = mainImage.naturalHeight;
+
+    // Displayed image dimensions
+    const displayedWidth = rect.width;
+    const displayedHeight = rect.height;
+
+    // Scale preview image
+    const scaledWidth = naturalWidth * zoomLevel;
+    const scaledHeight = naturalHeight * zoomLevel;
+
+    zoomPreviewImg.style.width = `${scaledWidth}px`;
+    zoomPreviewImg.style.height = `${scaledHeight}px`;
+
+    // Ratios
+    const ratioX = naturalWidth / displayedWidth;
+    const ratioY = naturalHeight / displayedHeight;
+
+    // Translate preview image
+    let previewX =
+      (x * ratioX * zoomLevel) -
+      (zoomPreview.offsetWidth / 2);
+    let previewY =
+      (y * ratioY * zoomLevel) -
+      (zoomPreview.offsetHeight / 2);
+
+    // Prevent white space
+    const maxX = scaledWidth - zoomPreview.offsetWidth;
+    const maxY = scaledHeight - zoomPreview.offsetHeight;
+
+    previewX = Math.max(0, Math.min(previewX, maxX));
+    previewY = Math.max(0, Math.min(previewY, maxY));
+
+    zoomPreviewImg.style.transform =
+      `translate(-${previewX}px, -${previewY}px)`;
+  }
+
+  // Desktop only
+  if (window.innerWidth > 992) {
+    container.addEventListener('mouseenter', showZoom);
+    container.addEventListener('mouseleave', hideZoom);
+    container.addEventListener('mousemove', moveLens);
+  }
 }
 
 /* Manufacturing Process Tabs — switches content when tab is clicked */
@@ -317,5 +389,47 @@ function initCallbackModal() {
       form.reset();
       closeModal();
     }
+  });
+}
+
+/* Mobile Nav — hamburger opens a slide-in drawer */
+function initMobileNav() {
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  const closeBtn = document.getElementById('mobileNavClose');
+
+  if (!hamburger || !mobileNav) return;
+
+  function openNav() {
+    mobileNav.classList.add('open');
+    mobileNav.setAttribute('aria-hidden', 'false');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeNav() {
+    mobileNav.classList.remove('open');
+    mobileNav.setAttribute('aria-hidden', 'true');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', openNav);
+  if (closeBtn) closeBtn.addEventListener('click', closeNav);
+
+  // Close when clicking the dark overlay (outside the panel)
+  mobileNav.addEventListener('click', (e) => {
+    if (e.target === mobileNav) closeNav();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeNav();
+  });
+
+  // Close nav when any link inside it is clicked
+  mobileNav.querySelectorAll('a, button').forEach((el) => {
+    el.addEventListener('click', () => {
+      if (!el.classList.contains('mobile-nav__close')) closeNav();
+    });
   });
 }
