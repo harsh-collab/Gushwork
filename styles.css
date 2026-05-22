@@ -1,5 +1,4 @@
 /* ============================================================
-   STYLES.CSS - Mascular Tubular Product Page
    Desktop-first layout (1440px design, 1240px max-width content)
    ============================================================ */
 
@@ -337,22 +336,26 @@ button {
   background-color: #f0f0f0;
 }
 
-.product-gallery__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 /* Zoom lens (square highlight on the main image) */
 .zoom-lens {
-  display: none;
   position: absolute;
-  width: 120px;
-  height: 120px;
-  border: 2px solid rgba(30, 64, 175, 0.5);
-  background-color: rgba(30, 64, 175, 0.08);
+
+  width: 140px;
+  height: 140px;
+
+  border: 1px solid rgba(0,0,0,0.2);
+
+  background:
+    rgba(255,255,255,0.35);
+
+  backdrop-filter: blur(1px);
+
   pointer-events: none;
-  z-index: 10;
+
+  display: none;
+
+  z-index: 20;
 }
 
 .product-gallery__main:hover .zoom-lens {
@@ -361,18 +364,27 @@ button {
 
 /* Zoom preview panel (appears beside the gallery on hover) */
 .zoom-preview {
-  display: none;
   position: absolute;
+
   top: 0;
-  left: calc(100% + 16px);
-  width: 400px;
-  height: 400px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  left: calc(100% + 20px);
+
+  width: 560px;
+  height: 560px;
+
+  background: #fff;
+
+  border: 1px solid #ddd;
+  border-radius: 16px;
+
   overflow: hidden;
-  background-color: #fff;
-  box-shadow: var(--shadow-lg);
+
+  display: none;
+
   z-index: 100;
+
+  box-shadow:
+    0 10px 40px rgba(0,0,0,0.12);
 }
 
 .zoom-preview.active {
@@ -380,10 +392,20 @@ button {
 }
 
 .zoom-preview__img {
-  width: 200%;
-  height: 200%;
-  object-fit: cover;
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  max-width: none;
+  max-height: none;
+
+  user-select: none;
+  pointer-events: none;
+
   transform-origin: top left;
+
+  will-change: transform;
 }
 
 /* Thumbnail Strip */
@@ -784,8 +806,9 @@ button {
 .mfg-process__tabs {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: 12px;
   margin-bottom: 32px;
+  flex-wrap: wrap;
 }
 
 .mfg-process__tab {
@@ -803,15 +826,9 @@ button {
   z-index: 1;
 }
 
-/* Connecting line between tabs */
+/* Connecting line removed */
 .mfg-process__tab + .mfg-process__tab::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 16px;
-  height: 1px;
-  background-color: var(--color-border);
+  display: none;
 }
 
 .mfg-process__tab.active {
@@ -964,9 +981,9 @@ button {
 }
 
 .applications-section__track-wrap {
-  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
   overflow: hidden;
-  padding-left: max(16px, calc((100% - 1240px) / 2 + 16px));
 }
 
 .applications-section__track {
@@ -1108,7 +1125,6 @@ button {
   padding: 100px 0;
   background-color: #fff;
   border-bottom: 1px solid #E1E3E8;
-  overflow: hidden;
 }
 
 .testimonials-section__title {
@@ -1129,17 +1145,31 @@ button {
 }
 
 .testimonials-section__track-wrap {
-  width: 100%;
+  width: 100vw;
+
+  position: relative;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
   overflow: hidden;
-  padding-left: max(16px, calc((100% - 1240px) / 2 + 16px));
 }
 
 .testimonials-section__track {
   display: flex;
+
   gap: 24px;
+
   overflow-x: auto;
+
   scroll-behavior: smooth;
+
   scrollbar-width: none;
+
+  padding-left: 38px;
+
+  width: max-content;
 }
 
 .testimonials-section__track::-webkit-scrollbar {
@@ -1147,7 +1177,7 @@ button {
 }
 
 .testimonial-card {
-  flex: 0 0 420px;
+  flex: 0 0 440px;
   min-height: 402px;
   background: #F7F8F9;
   border: 1.5px solid #E1E3E8;
@@ -1203,7 +1233,11 @@ button {
   font-size: 12px;
   color: var(--color-text-light);
 }
-
+.testimonials-section .container,
+.applications-section .container {
+  max-width: 1240px;
+  margin: 0 auto;
+}
 /* ==================== PIPING SOLUTIONS PORTFOLIO ==================== */
 .portfolio-section {
   padding: 100px 0;
@@ -1881,18 +1915,107 @@ button {
 }
 
 /* ============================================================
+   MOBILE NAV DRAWER
+   ============================================================ */
+
+/* Hamburger button — hidden on desktop */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  flex-shrink: 0;
+}
+
+.hamburger__line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: var(--color-dark);
+  border-radius: 2px;
+  transition: all var(--transition);
+}
+
+/* Full-screen overlay */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.mobile-nav.open {
+  display: block;
+}
+
+/* Slide-in side panel */
+.mobile-nav__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 85vw;
+  background: var(--color-bg);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+}
+
+.mobile-nav__close {
+  align-self: flex-end;
+  color: var(--color-text-light);
+  padding: 4px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-nav__close:hover {
+  background: var(--color-bg-light);
+  color: var(--color-dark);
+}
+
+.mobile-nav__link {
+  display: block;
+  padding: 14px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-dark);
+  border-bottom: 1px solid var(--color-border);
+  transition: color var(--transition);
+}
+
+.mobile-nav__link:hover {
+  color: var(--color-primary);
+}
+
+.mobile-nav__cta {
+  margin-top: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ============================================================
    RESPONSIVE BREAKPOINTS
-   1440px → padding 100px
-   1200px → padding 80px
-   1080px → padding 80px tb, 60px lr
-   800px  → padding 80px tb, 48px lr
-   360px  → padding 48px tb, 16px lr
    ============================================================ */
 
 /* ---------- ≤ 1200px ---------- */
 @media (max-width: 1200px) {
   :root {
-    --container-padding: 80px;
+    --container-padding: 40px;
   }
 
   .product-hero,
@@ -1917,10 +2040,10 @@ button {
   }
 }
 
-/* ---------- ≤ 1080px ---------- */
-@media (max-width: 1080px) {
+/* ---------- ≤ 992px ---------- */
+@media (max-width: 992px) {
   :root {
-    --container-padding: 60px;
+    --container-padding: 24px;
   }
 
   .product-hero__grid {
@@ -1928,8 +2051,17 @@ button {
     gap: 32px;
   }
 
+  /* Disable zoom preview on tablet/mobile */
   .zoom-preview {
-    display: none;
+    display: none !important;
+  }
+
+  .zoom-lens {
+    display: none !important;
+  }
+
+  .product-gallery__main {
+    cursor: default;
   }
 
   .mfg-process__content {
@@ -1984,6 +2116,12 @@ button {
 
   .catalogue-cta__form {
     width: 100%;
+    min-width: 0;
+  }
+
+  .catalogue-cta__input {
+    min-width: 0;
+    width: 100%;
   }
 
   .app-card {
@@ -1993,26 +2131,35 @@ button {
   .testimonial-card {
     flex: 0 0 340px;
   }
+
+  .applications-section__header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
 }
 
-/* ---------- ≤ 800px ---------- */
-@media (max-width: 800px) {
+/* ---------- ≤ 768px ---------- */
+@media (max-width: 768px) {
   :root {
-    --container-padding: 48px;
+    --container-padding: 20px;
+  }
+
+  /* Show hamburger, hide desktop nav & CTA */
+  .hamburger {
+    display: flex;
+  }
+
+  .main-nav,
+  .main-header__cta {
+    display: none;
   }
 
   .main-header__inner {
     gap: 16px;
   }
 
-  .main-nav {
-    display: none;
-  }
-
-  .features-section__grid {
-    grid-template-columns: 1fr;
-  }
-
+  /* Section headings */
   .features-section__title,
   .tech-specs__title,
   .mfg-process__title,
@@ -2030,6 +2177,20 @@ button {
 
   .contact-cta__card {
     padding: 32px;
+  }
+
+  /* CTA buttons stacked */
+  .product-info__actions {
+    flex-direction: column;
+  }
+
+  .product-info__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .features-section__grid {
+    grid-template-columns: 1fr;
   }
 
   .portfolio-section__grid {
@@ -2062,9 +2223,18 @@ button {
     text-align: center;
   }
 
+  .site-footer__bottom-links {
+    justify-content: center;
+  }
+
   .mfg-process__tabs {
     flex-wrap: wrap;
     gap: 8px;
+    justify-content: center;
+  }
+
+  .mfg-process__tab + .mfg-process__tab::before {
+    display: none;
   }
 
   .app-card {
@@ -2078,20 +2248,47 @@ button {
   }
 
   .sticky-header__title {
-    font-size: 13px;
+    font-size: 12px;
+    max-width: 180px;
+  }
+
+  .sticky-header__price {
+    font-size: 12px;
   }
 
   .product-info__title {
-    font-size: 28px;
+    font-size: 26px;
+  }
+
+  /* Brands — wrap on mobile */
+  .brands-section__track {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
   }
 
   .brands-section__item img {
     height: 28px;
   }
+
+  /* Thumbnail strip — smaller thumbs */
+  .product-gallery__thumbs {
+    gap: 8px;
+  }
+
+  .product-gallery__thumb-btn {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* FAQ */
+  .faq-section__title {
+    font-size: 28px;
+  }
 }
 
-/* ---------- ≤ 360px ---------- */
-@media (max-width: 360px) {
+/* ---------- ≤ 576px ---------- */
+@media (max-width: 576px) {
   :root {
     --container-padding: 16px;
   }
@@ -2113,6 +2310,7 @@ button {
     padding: 48px 0 0;
   }
 
+  /* Headings */
   .features-section__title,
   .tech-specs__title,
   .mfg-process__title,
@@ -2121,27 +2319,34 @@ button {
   .testimonials-section__title,
   .portfolio-section__title,
   .resources-section__title {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .contact-cta__title {
-    font-size: 24px;
-  }
-
-  .contact-cta__card {
-    padding: 24px;
-    border-radius: 20px;
-    gap: 32px;
+    font-size: 22px;
   }
 
   .product-info__title {
-    font-size: 24px;
+    font-size: 22px;
   }
 
+  /* Contact card */
+  .contact-cta__card {
+    padding: 24px;
+    border-radius: 20px;
+    gap: 28px;
+  }
+
+  /* Price box */
   .product-info__price-box {
-    padding: 16px;
+    padding: 14px;
   }
 
+  .product-info__price {
+    font-size: 22px;
+  }
+
+  /* Shipping */
   .product-info__shipping {
     flex-direction: column;
     gap: 8px;
@@ -2151,15 +2356,31 @@ button {
     display: none;
   }
 
+  /* Sticky header */
+  .sticky-header__left {
+    gap: 8px;
+  }
+
+  .sticky-header__thumb {
+    display: none;
+  }
+
+  .sticky-header__title {
+    font-size: 12px;
+    max-width: 150px;
+  }
+
+  /* Footer banner */
   .site-footer__banner {
     padding: 20px;
     border-radius: 12px;
   }
 
   .site-footer__banner-text {
-    font-size: 16px;
+    font-size: 15px;
   }
 
+  /* Resources */
   .resources-section__list {
     padding: 16px;
   }
@@ -2170,32 +2391,78 @@ button {
     gap: 8px;
   }
 
+  /* Carousel cards */
   .app-card {
     flex: 0 0 240px;
     height: 300px;
+    border-radius: 20px;
+    padding: 20px 16px;
   }
 
   .testimonial-card {
     flex: 0 0 260px;
   }
 
+  /* Catalogue */
   .catalogue-cta__inner {
     padding: 20px;
   }
 
-  .sticky-header__left {
-    gap: 8px;
-  }
-
-  .sticky-header__thumb {
-    display: none;
-  }
-
+  /* Phone group in contact form */
   .contact-cta__phone-group {
     flex-direction: column;
   }
 
   .contact-cta__phone-code {
     width: 100%;
+  }
+
+  /* Manufacturing card */
+  .mfg-process__card {
+    padding: 20px 16px;
+  }
+
+  .mfg-process__step-title {
+    font-size: 20px;
+  }
+
+  /* FAQ */
+  .faq-item summary {
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  .faq-item__answer {
+    padding: 0 16px 16px;
+  }
+
+  /* Tech specs table — allow horizontal scroll clearly */
+  .tech-specs__table-wrap {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tech-specs__table thead th,
+  .tech-specs__table tbody td {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  /* Footer bottom links */
+  .site-footer__bottom-links {
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Thumbnail strip */
+  .product-gallery__thumb-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  /* Modal full-width on small screens */
+  .modal {
+    width: calc(100% - 24px);
+    padding: 12px 4px;
   }
 }
