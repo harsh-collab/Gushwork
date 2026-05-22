@@ -36,7 +36,7 @@
       <a href="#" class="logo">
         <img src="assets/ce5a170c60004b853d7c68fb0ec5bf7ee4e75417.png" alt="Mangalam HDPE Pipes" class="logo__img">
       </a>
-      <!-- Right group: avatar + nav + CTA -->
+      <!-- Right group: nav + CTA + hamburger -->
       <div class="main-header__right">
         <nav class="main-nav" aria-label="Primary navigation">
           <ul class="main-nav__list">
@@ -48,10 +48,28 @@
             </li>
           </ul>
         </nav>
-        <a href="#" class="btn btn--primary btn--sm">Contact Us</a>
+        <a href="#" class="btn btn--primary btn--sm main-header__cta">Contact Us</a>
+        <!-- Hamburger — visible only on mobile -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+          <span class="hamburger__line"></span>
+          <span class="hamburger__line"></span>
+          <span class="hamburger__line"></span>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- ==================== MOBILE NAV DRAWER ==================== -->
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <div class="mobile-nav__panel">
+      <button class="mobile-nav__close" id="mobileNavClose" aria-label="Close menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <a href="#" class="mobile-nav__link">About Us</a>
+      <a href="#" class="mobile-nav__link">Products</a>
+      <a href="#" class="btn btn--primary mobile-nav__cta open-callback-modal">Contact Us</a>
+    </div>
+  </div>
 
   <main>
     <!-- ==================== BREADCRUMB ==================== -->
